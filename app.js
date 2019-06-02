@@ -25,11 +25,7 @@ function rendeCafe(doc){
     })
 }
 
-db.collection('coffee').where('city','==',"helwan").orderBy('name').get().then((snapshot)=>{
-    snapshot.docs.forEach(element => {
-        rendeCafe(element);
-    });
-});
+
 
 // add data
 form.addEventListener('submit' ,(e)=>{
@@ -40,4 +36,18 @@ form.addEventListener('submit' ,(e)=>{
     })
     form.name.value='';
     form.city.value='';
+})
+
+// real-time listener
+db.collection('coffee').orderBy('city').onSnapshot(snapshot => {
+    let changes = snapshot.docChanges();
+    changes.forEach(change => {
+        console.log(change.doc.data());
+        if(change.type == 'added'){
+            rendeCafe(change.doc);
+        } else if (change.type == 'removed'){
+            let li = cafeList.querySelector('[data-id=' + change.doc.id + ']');
+            cafeList.removeChild(li);
+        }
+    })
 })
