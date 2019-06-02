@@ -25,7 +25,7 @@ function rendeCafe(doc){
     })
 }
 
-db.collection('coffee').where('city','>=',"helwan").get().then((snapshot)=>{
+db.collection('coffee').where('city','==',"helwan").orderBy('name').get().then((snapshot)=>{
     snapshot.docs.forEach(element => {
         rendeCafe(element);
     });
